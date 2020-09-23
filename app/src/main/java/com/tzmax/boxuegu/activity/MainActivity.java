@@ -55,7 +55,7 @@ public class MainActivity extends FragmentActivity {
         mTabs.add(new tabViewData(fm1, "习题", R.drawable.main_exercises_icon, R.drawable.main_exercises_icon_selected));
 
         Fragment fm2 = new MyFragment();
-        mTabs.add(new tabViewData(fm2, "个人", R.drawable.main_my_icon, R.drawable.main_my_icon_selected));
+        mTabs.add(new tabViewData(fm2, "我的", R.drawable.main_my_icon, R.drawable.main_my_icon_selected));
 
         // 注册 tab 底部导航事件监听
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
