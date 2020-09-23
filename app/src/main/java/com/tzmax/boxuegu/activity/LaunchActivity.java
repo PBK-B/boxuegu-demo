@@ -25,7 +25,7 @@ public class LaunchActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                HomeActivity.start();
+                MainActivity.start();
                 finish();
             }
         }, 3000);
