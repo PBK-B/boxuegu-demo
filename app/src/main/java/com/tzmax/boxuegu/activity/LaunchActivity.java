@@ -28,7 +28,7 @@ public class LaunchActivity extends Activity {
                 MainActivity.start();
                 finish();
             }
-        }, 3000);
+        }, 1000);
     }
 
 }

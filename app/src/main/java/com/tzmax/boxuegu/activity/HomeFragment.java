@@ -1,18 +1,22 @@
 package com.tzmax.boxuegu.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -25,12 +29,16 @@ public class HomeFragment extends Fragment {
 
     private Activity activity;
     private View rootView;
+
     private ViewPager mBanner;
-    private RecyclerView mVideoList;
     private BannerAdapter bannerAdapter;
     private ArrayList<View> banners;
     private LinearLayout mBannerIndicator;
     public Thread bannerThread;
+
+    private RecyclerView mVideoList;
+    private ArrayList<videoData> videos;
+    private videoListAdapter videoAdapter;
 
     @Nullable
     @Override
@@ -52,6 +60,7 @@ public class HomeFragment extends Fragment {
         mBannerIndicator = rootView.findViewById(R.id.home_banner_indicator);
 
         setBanners();
+        setVideoList();
     }
 
     private void setBanners() {
@@ -87,7 +96,7 @@ public class HomeFragment extends Fragment {
 
     private void autoBanner(final int autoTime) {
 
-        if(bannerThread != null) return;
+        if (bannerThread != null) return;
 
         // 开启一个线程，用于循环
         bannerThread = new Thread(new Runnable() {
@@ -136,7 +145,7 @@ public class HomeFragment extends Fragment {
                 int index = position % indicators.size();
                 int i = 0;
                 for (View view : indicators) {
-                    if( i++ == index) {
+                    if (i++ == index) {
                         view.setBackgroundResource(R.drawable.indicator_on);
                     } else {
                         view.setBackgroundResource(R.drawable.indicator_off);
@@ -154,6 +163,30 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+    }
+
+    private void setVideoList() {
+
+        // 添加数据
+        videos = new ArrayList<>();
+        videos.add(new videoData("第1章 Android 基础入门", "Android 开发环境搭建", R.drawable.chapter_1_icon));
+        videos.add(new videoData("第2章 Android UI开发", "Android 五大布局", R.drawable.chapter_2_icon));
+        videos.add(new videoData("第3章 Activity", "Activity 的使用", R.drawable.chapter_3_icon));
+        videos.add(new videoData("第4章 数据存储", "数据存储方式与文件存储", R.drawable.chapter_4_icon));
+        videos.add(new videoData("第5章 SQLite 数据库", "SQLite 数据库与 ListView", R.drawable.chapter_5_icon));
+        videos.add(new videoData("第6章 广播接收者", "广播接收者的类型与使用", R.drawable.chapter_6_icon));
+        videos.add(new videoData("第7章 服务", "服务创建，启动与生命周期", R.drawable.chapter_7_icon));
+        videos.add(new videoData("第8章 内容提供者", "内容提供者的使用", R.drawable.chapter_8_icon));
+        videos.add(new videoData("第9章 网络编程", "访问网络与数据提交方式", R.drawable.chapter_9_icon));
+        videos.add(new videoData("第10章 高级编程", "动画，多媒体，传感器等", R.drawable.chapter_10_icon));
+
+        StaggeredGridLayoutManager staggeredGridLayout =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        mVideoList.setLayoutManager(staggeredGridLayout);
+        videoAdapter = new videoListAdapter(activity, videos);
+        mVideoList.setAdapter(videoAdapter);
+
 
     }
 
@@ -196,7 +229,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             int index = innerPosition(position);
-             container.removeView(mViewList.get(index));
+            container.removeView(mViewList.get(index));
         }
 
         private int innerPosition(int position) {
@@ -205,5 +238,72 @@ public class HomeFragment extends Fragment {
 
     }
 
+    public class videoData {
+        public String title, info;
+        public int imageID;
+
+        public videoData(String title, String info, int image) {
+            this.title = title;
+            this.info = info;
+            this.imageID = image;
+        }
+
+    }
+
+    private class videoListAdapter extends RecyclerView.Adapter<videoListAdapter.viewController> {
+
+        private Context mContext;
+        public ArrayList<videoData> videos;
+
+        public videoListAdapter(Context context, ArrayList<videoData> videoList) {
+            this.mContext = context;
+            this.videos = videoList;
+        }
+
+        @NonNull
+        @Override
+        public viewController onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = View.inflate(mContext, R.layout.item_home_video, null);
+            return new viewController(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull viewController holder, int position) {
+
+            videoData data = videos.get(position);
+
+            holder.mTitle.setText(data.title);
+            holder.mInfo.setText(data.info);
+            holder.mImage.setImageResource(data.imageID);
+            holder.rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("测试", "onClick: 点击事件");
+                }
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return videos.size();
+        }
+
+        class viewController extends RecyclerView.ViewHolder {
+            View rootView;
+            TextView mTitle, mInfo;
+            ImageView mImage;
+
+            public viewController(@NonNull View itemView) {
+                super(itemView);
+                this.rootView = itemView;
+                this.mTitle = itemView.findViewById(R.id.item_home_video_title);
+                this.mInfo = itemView.findViewById(R.id.item_home_video_info);
+                this.mImage = itemView.findViewById(R.id.item_home_video_img);
+            }
+        }
+
+
+    }
 
 }
