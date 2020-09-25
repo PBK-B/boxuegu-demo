@@ -1,25 +1,16 @@
 package com.tzmax.boxuegu.activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
@@ -27,11 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.tzmax.boxuegu.R;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class HomeFragment extends Fragment {
@@ -43,6 +30,7 @@ public class HomeFragment extends Fragment {
     private BannerAdapter bannerAdapter;
     private ArrayList<View> banners;
     private LinearLayout mBannerIndicator;
+    public Thread bannerThread;
 
     @Nullable
     @Override
@@ -98,8 +86,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void autoBanner(final int autoTime) {
+
+        if(bannerThread != null) return;
+
         // 开启一个线程，用于循环
-        new Thread(new Runnable() {
+        bannerThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean isAuto = true;
@@ -119,7 +110,8 @@ public class HomeFragment extends Fragment {
                     });
                 }
             }
-        }).start();
+        });
+        bannerThread.start();
     }
 
     private void initBannerIndicator() {
