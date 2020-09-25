@@ -1,11 +1,15 @@
 package com.tzmax.boxuegu.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,16 +27,22 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.tzmax.boxuegu.R;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class HomeFragment extends Fragment {
 
+    private Activity activity;
     private View rootView;
     private ViewPager mBanner;
     private RecyclerView mVideoList;
     private BannerAdapter bannerAdapter;
     private ArrayList<View> banners;
+    private LinearLayout mBannerIndicator;
 
     @Nullable
     @Override
@@ -43,6 +53,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        activity = this.getActivity();
         rootView = view;
         initView();
     }
@@ -50,6 +61,7 @@ public class HomeFragment extends Fragment {
     private void initView() {
         mBanner = rootView.findViewById(R.id.home_banner);
         mVideoList = rootView.findViewById(R.id.home_list);
+        mBannerIndicator = rootView.findViewById(R.id.home_banner_indicator);
 
         setBanners();
     }
@@ -76,15 +88,87 @@ public class HomeFragment extends Fragment {
         bannerAdapter = new BannerAdapter(banners);
         mBanner.setAdapter(bannerAdapter);
 
+        initBannerIndicator();
+
         int firstPage = Integer.MAX_VALUE / 2;
         mBanner.setCurrentItem(firstPage, false);
+
+        autoBanner(3500);
+
+    }
+
+    private void autoBanner(final int autoTime) {
+        // 开启一个线程，用于循环
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean isAuto = true;
+                while (isAuto) {
+                    try {
+                        Thread.sleep(autoTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int index = mBanner.getCurrentItem() + 1;
+
+                            mBanner.setCurrentItem(index, false);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    private void initBannerIndicator() {
+
+        final ArrayList<View> indicators = new ArrayList<>();
+
+        for (View view : banners) {
+            View mView = new View(activity);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(20, 20);
+            lp.setMargins(0, 0, 10, 0);
+            mView.setLayoutParams(lp);
+            mView.setBackgroundResource(R.drawable.indicator_off);
+            indicators.add(mView);
+            mBannerIndicator.addView(mView);
+        }
+
+        mBanner.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currentPosition;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                int index = position % indicators.size();
+                int i = 0;
+                for (View view : indicators) {
+                    if( i++ == index) {
+                        view.setBackgroundResource(R.drawable.indicator_on);
+                    } else {
+                        view.setBackgroundResource(R.drawable.indicator_off);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 
     private static class BannerAdapter extends PagerAdapter {
 
         String TAG = "测试";
-        private ArrayList<View> mViewList;
+        public ArrayList<View> mViewList;
 
         public BannerAdapter(ArrayList<View> views) {
             this.mViewList = views;
@@ -92,7 +176,14 @@ public class HomeFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return Integer.MAX_VALUE;
+            if (mViewList == null) {
+                return 0;
+            }
+            if (mViewList.size() == 1) {
+                return 1;
+            } else {
+                return Integer.MAX_VALUE;
+            }
         }
 
         @Override
@@ -104,14 +195,16 @@ public class HomeFragment extends Fragment {
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             int index = innerPosition(position);
-            container.addView(mViewList.get(index));
+            if (container.getChildCount() < mViewList.size()) {
+                container.addView(mViewList.get(index));
+            }
             return mViewList.get(index);
         }
 
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             int index = innerPosition(position);
-            container.removeView(mViewList.get(index));
+             container.removeView(mViewList.get(index));
         }
 
         private int innerPosition(int position) {
