@@ -82,30 +82,29 @@ public class ExercisesFragment extends Fragment {
             this.imageID = image;
             this.countIssue = countIssue;
         }
+    }
 
-        class IssueData {
-            String id, issue, answer;
-            ArrayList<AnswerData> answers;
+    class IssueData {
+        String id, issue, answer;
+        ArrayList<AnswerData> answers;
 
-            public IssueData(String id, String issue, String answer, ArrayList<AnswerData> answers) {
-                this.id = id;
-                this.issue = issue;
-                this.answer = answer;
-                this.answers = answers;
-            }
-
+        public IssueData(String id, String issue, String answer, ArrayList<AnswerData> answers) {
+            this.id = id;
+            this.issue = issue;
+            this.answer = answer;
+            this.answers = answers;
         }
 
-        class AnswerData {
-            String id, symbol, content;
+    }
 
-            public AnswerData(String id, String symbol, String content) {
-                this.id = id;
-                this.symbol = symbol;
-                this.content = content;
-            }
+    class AnswerData {
+        String id, symbol, content;
+
+        public AnswerData(String id, String symbol, String content) {
+            this.id = id;
+            this.symbol = symbol;
+            this.content = content;
         }
-
     }
 
     private class ExercisesAdapter implements ListAdapter {
@@ -176,6 +175,13 @@ public class ExercisesFragment extends Fragment {
             vc.mImage.setBackgroundResource(data.imageID);
             vc.mTitle.setText((String) data.title);
             vc.mInfo.setText((String) "共计" + data.countIssue + "题");
+
+            vc.rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ExercisesActivity.start();
+                }
+            });
 
             return convertView;
         }
