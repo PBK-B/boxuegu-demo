@@ -25,10 +25,10 @@ public class LaunchActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                MainActivity.start();
+                SignInActivity.start();
                 finish();
             }
-        }, 1000);
+        }, 100);
     }
 
 }
