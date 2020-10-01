@@ -24,4 +24,11 @@ public class SignInActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
     }
+
+    private void initView() {
+
+    }
+
+
+
 }
