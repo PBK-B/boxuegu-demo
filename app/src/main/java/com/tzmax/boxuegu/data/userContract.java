@@ -31,6 +31,7 @@ public class userContract {
 
     // 提供注册用户接口
     public boolean apiSignUp(String name, String password) {
+        // TODO: 这里需要添加一个判断账号是否存在的逻辑
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(User.COLUMN_NAME_NAME, name);

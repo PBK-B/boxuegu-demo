@@ -11,7 +11,7 @@
         android:gravity="center_vertical">
 
         <ImageButton
-            android:id="@+id/exercises_page_goback"
+            android:id="@+id/signin_page_goback"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:src="@drawable/iv_back"
@@ -71,6 +71,7 @@
                     android:layout_gravity="center_vertical"/>
 
                 <EditText
+                    android:id="@+id/signin_edit_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="请输入用户名"
@@ -95,6 +96,7 @@
                     android:layout_gravity="center_vertical"/>
 
                 <EditText
+                    android:id="@+id/signin_edit_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="请输入密码"
@@ -104,6 +106,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/signin_btn_signin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#FFF"
@@ -119,6 +122,7 @@
                 android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/signin_btn_signup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -127,6 +131,7 @@
                     android:text="立即注册"/>
 
                 <Button
+                    android:id="@+id/signin_btn_repassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
