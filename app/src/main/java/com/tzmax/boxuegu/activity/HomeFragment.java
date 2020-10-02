@@ -270,7 +270,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull viewController holder, int position) {
 
-            videoData data = videos.get(position);
+            final videoData data = videos.get(position);
 
             holder.mTitle.setText(data.title);
             holder.mInfo.setText(data.info);
@@ -279,6 +279,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Log.d("测试", "onClick: 点击事件");
+                    VideoActivity.start(1);
                 }
             });
 
