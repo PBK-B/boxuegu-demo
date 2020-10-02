@@ -39,6 +39,7 @@
             android:background="#2000" />
 
         <LinearLayout
+            android:id="@+id/my_play_record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#1666"
@@ -72,6 +73,7 @@
             android:background="#2000" />
 
         <LinearLayout
+            android:id="@+id/my_app_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#1666"
